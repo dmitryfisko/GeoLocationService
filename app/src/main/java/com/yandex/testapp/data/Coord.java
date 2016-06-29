@@ -12,6 +12,12 @@ public final class Coord {
 
     private final double mLatitude;
 
+    public Coord(double longitude, double latitude) {
+        mId = "";
+        mLongitude = longitude;
+        mLatitude = latitude;
+    }
+
     public Coord(String itemId, double longitude, double latitude) {
         mId = itemId;
         mLongitude = longitude;

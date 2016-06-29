@@ -29,9 +29,9 @@ import java.util.Map;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
-public class CoordsRepository implements CoordsDataSource {
+public class CoordsProvider implements CoordsDataSource {
 
-    private static CoordsRepository INSTANCE = null;
+    private static CoordsProvider INSTANCE = null;
 
     private final CoordsDataSource mTasksLocalDataSource;
 
@@ -41,14 +41,14 @@ public class CoordsRepository implements CoordsDataSource {
 
     boolean mCacheIsDirty = false;
 
-    private CoordsRepository(@NonNull CoordsDataSource tasksLocalDataSource) {
+    private CoordsProvider(@NonNull CoordsDataSource tasksLocalDataSource) {
         mTasksLocalDataSource = tasksLocalDataSource;
         mDataChangedListeners = new ArrayList<>();
     }
 
-    public static CoordsRepository getInstance(@NonNull CoordsDataSource tasksLocalDataSource) {
+    public static CoordsProvider getInstance(@NonNull CoordsDataSource coordsLocalDataSource) {
         if (INSTANCE == null) {
-            INSTANCE = new CoordsRepository(tasksLocalDataSource);
+            INSTANCE = new CoordsProvider(coordsLocalDataSource);
         }
         return INSTANCE;
     }
