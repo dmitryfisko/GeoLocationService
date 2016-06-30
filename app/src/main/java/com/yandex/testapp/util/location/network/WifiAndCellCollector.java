@@ -1,8 +1,12 @@
 package com.yandex.testapp.util.location.network;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.telephony.CellLocation;
 import android.telephony.NeighboringCellInfo;
 import android.telephony.PhoneStateListener;
@@ -37,6 +41,7 @@ public class WifiAndCellCollector extends PhoneStateListener implements Runnable
 
     private NetworkLocationListener listener;
     private TelephonyManager tm;
+    private Context mContext;
 
     private String radioType;
     private String mcc;
@@ -71,6 +76,7 @@ public class WifiAndCellCollector extends PhoneStateListener implements Runnable
                                 long requestsInterval,
                                 NetworkLocationListener listener) {
         this.listener = listener;
+        mContext = context;
         mRequestsInterval = requestsInterval;
         tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (tm != null) {
@@ -96,11 +102,42 @@ public class WifiAndCellCollector extends PhoneStateListener implements Runnable
     public void startCollect() {
         isRun = true;
         if (tm != null) {
-            tm.listen(this, PhoneStateListener.LISTEN_SIGNAL_STRENGTH |
-                    PhoneStateListener.LISTEN_CELL_LOCATION |
-                    PhoneStateListener.LISTEN_DATA_CONNECTION_STATE);
+            tm.listen(this, getGrantedPermissions());
         }
         (new Thread(this)).start();
+    }
+
+    private int getGrantedPermissions() {
+        int events = PhoneStateListener.LISTEN_SIGNAL_STRENGTH |
+                PhoneStateListener.LISTEN_CELL_LOCATION |
+                PhoneStateListener.LISTEN_DATA_CONNECTION_STATE;
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            int locationState = ContextCompat.checkSelfPermission(
+                    mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
+            boolean isLocationGranted = (locationState == PackageManager.PERMISSION_GRANTED);
+
+            int phoneState = ContextCompat.checkSelfPermission(
+                    mContext, Manifest.permission.READ_PHONE_STATE);
+            boolean isPhoneStateGranted = (phoneState == PackageManager.PERMISSION_GRANTED);
+
+            if (!isLocationGranted) {
+                events &= ~PhoneStateListener.LISTEN_CELL_LOCATION;
+            }
+            if (!isPhoneStateGranted) {
+                events &= ~PhoneStateListener.LISTEN_SIGNAL_STRENGTH;
+            }
+        }
+        return events;
+    }
+
+    private boolean isLocationPermissonGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            int locationState = ContextCompat.checkSelfPermission(
+                    mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
+            return locationState == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
     }
 
     public void stopCollect() {
@@ -154,7 +191,13 @@ public class WifiAndCellCollector extends PhoneStateListener implements Runnable
             return;
         }
         cellInfos.clear();
-        List<NeighboringCellInfo> cellList = tm.getNeighboringCellInfo();
+
+        List<NeighboringCellInfo> cellList;
+        if (isLocationPermissonGranted()) {
+             cellList = tm.getNeighboringCellInfo();
+        } else {
+            cellList = new ArrayList<>();
+        }
         for (NeighboringCellInfo cell : cellList) {
             int cellId = cell.getCid();
             int lac = NeighboringCellInfo.UNKNOWN_CID;

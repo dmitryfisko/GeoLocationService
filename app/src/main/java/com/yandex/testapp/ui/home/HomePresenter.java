@@ -1,12 +1,22 @@
 package com.yandex.testapp.ui.home;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.ActivityCompat;
 
 import com.yandex.testapp.service.GeoService;
 
 public class HomePresenter implements HomeContract.Presenter {
+
+    static final String[] PERMISSIONS = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_PHONE_STATE,
+    };
+
+    static final int GEO_SERVICE_PERMISSIONS_REQUEST = 100;
 
     private HomeContract.View mHomeView;
     private Context mContext;
@@ -27,9 +37,8 @@ public class HomePresenter implements HomeContract.Presenter {
         if (isServiceOn) {
             stopGeoService();
         } else {
-            startGeoService();
+            checkPermissions();
         }
-
     }
 
     @Override
@@ -39,9 +48,17 @@ public class HomePresenter implements HomeContract.Presenter {
         } else {
             mHomeView.setSwitchState(false);
         }
+
     }
 
-    private void startGeoService() {
+    private void checkPermissions() {
+        HomeFragment homeFragment = (HomeFragment) mHomeView;
+        homeFragment.requestPermissions(PERMISSIONS,
+                GEO_SERVICE_PERMISSIONS_REQUEST);
+    }
+
+    @Override
+    public void startGeoServiceManually() {
         Intent intent = new Intent(mContext, GeoService.class);
         mContext.startService(intent);
     }

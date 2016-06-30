@@ -29,5 +29,7 @@ public interface HomeContract {
     interface Presenter extends BasePresenter {
 
         void serviceStateChanged(boolean isSwitchOn);
+
+        void startGeoServiceManually();
     }
 }

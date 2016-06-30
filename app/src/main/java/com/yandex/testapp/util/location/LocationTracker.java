@@ -82,6 +82,10 @@ public class LocationTracker implements NetworkLocationListener {
 
     @Override
     public void onNetworkLocationChanged(NetworkLocationInfo location) {
+        if (location.lbsType == null) {
+            return;
+        }
+
         double longitude = Double.parseDouble(location.lbsLongtitude);
         double latitude = Double.parseDouble(location.lbsLatitude);
         double altitude = Double.parseDouble(location.lbsAltitude);
@@ -93,11 +97,11 @@ public class LocationTracker implements NetworkLocationListener {
         if (Build.VERSION.SDK_INT >= 23) {
             int fineLocationState = ContextCompat.checkSelfPermission(
                     mContext, android.Manifest.permission.ACCESS_FINE_LOCATION);
-            boolean isFineLocGranted = fineLocationState == PackageManager.PERMISSION_GRANTED;
+            boolean isFineLocGranted = (fineLocationState == PackageManager.PERMISSION_GRANTED);
 
             int coarseLocationState = ContextCompat.checkSelfPermission(
                     mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
-            boolean isCoarseLocGranted = coarseLocationState == PackageManager.PERMISSION_GRANTED;
+            boolean isCoarseLocGranted = (coarseLocationState == PackageManager.PERMISSION_GRANTED);
 
             return isFineLocGranted || isCoarseLocGranted;
         }
@@ -127,9 +131,7 @@ public class LocationTracker implements NetworkLocationListener {
                     TimeUnit.MILLISECONDS.sleep(mTimeInterval);
                     Coord coord = getLocation();
                     mCallback.onLocationChanged(coord);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                } catch (InterruptedException ignored) {}
             }
             return null;
         }

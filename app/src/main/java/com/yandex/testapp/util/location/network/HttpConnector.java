@@ -49,18 +49,18 @@ public class HttpConnector {
                 return response;
             }
         } catch (Exception e) {
-            Log.e("LBS","http error = "+e);
+            Log.e("LBS","http error = " + e);
         } finally {
             if (outputStream != null) {
                 try {
                     outputStream.close();
-                } catch (IOException ex) {
+                } catch (IOException ignored) {
                 }
             }
             if (inputStream != null) {
                 try {
                     inputStream.close();
-                } catch (IOException ex) {
+                } catch (IOException ignored) {
                 }
             }
             if (urlConnection != null) {

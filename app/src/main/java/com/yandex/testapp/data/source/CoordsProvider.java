@@ -83,15 +83,18 @@ public class CoordsProvider implements CoordsDataSource {
 
 
     @Override
-    public void saveCoord(@NonNull Coord task) {
-        checkNotNull(task);
-        mTasksLocalDataSource.saveCoord(task);
+    public void saveCoord(Coord coord) {
+        if (coord == null) {
+            return;
+        }
+
+        mTasksLocalDataSource.saveCoord(coord);
 
         // Do in memory cache update to keep the app UI up to date
         if (mCachedTasks == null) {
             mCachedTasks = new LinkedHashMap<>();
         }
-        mCachedTasks.put(task.getId(), task);
+        mCachedTasks.put(coord.getId(), coord);
 
         for(DataChangedCallback callback: mDataChangedListeners) {
             callback.onDataChanged();

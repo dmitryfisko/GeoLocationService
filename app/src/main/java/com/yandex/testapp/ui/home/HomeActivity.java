@@ -22,7 +22,7 @@ public class HomeActivity extends AppCompatActivity {
         HomeFragment tasksFragment =
                 (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (tasksFragment == null) {
-            tasksFragment = new HomeFragment();
+            tasksFragment = HomeFragment.newInstance();
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), tasksFragment, R.id.content_frame);
         }
