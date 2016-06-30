@@ -27,5 +27,6 @@ public final class CoordsPersistenceContract {
         public static final String COLUMN_NAME_ENTRY_ID = "entryid";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
+        public static final String COLUMN_NAME_ALTITUDE = "altitude";
     }
 }

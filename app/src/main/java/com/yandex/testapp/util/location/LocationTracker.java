@@ -36,7 +36,8 @@ public class LocationTracker implements NetworkLocationListener {
         public void onLocationChanged(Location location) {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
-            Coord coord = new Coord(longitude, latitude);
+            double altitude = location.getAltitude();
+            Coord coord = new Coord(longitude, latitude, altitude);
             mLastGPSLocation = new LocationHistory(coord);
         }
 
@@ -83,7 +84,8 @@ public class LocationTracker implements NetworkLocationListener {
     public void onNetworkLocationChanged(NetworkLocationInfo location) {
         double longitude = Double.parseDouble(location.lbsLongtitude);
         double latitude = Double.parseDouble(location.lbsLatitude);
-        Coord coord = new Coord(latitude, longitude);
+        double altitude = Double.parseDouble(location.lbsAltitude);
+        Coord coord = new Coord(latitude, longitude, altitude);
         mLastNetLocation = new LocationHistory(coord);
     }
 

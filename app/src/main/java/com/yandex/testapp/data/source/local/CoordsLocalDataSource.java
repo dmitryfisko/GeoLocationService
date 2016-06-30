@@ -38,6 +38,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class CoordsLocalDataSource implements CoordsDataSource {
 
     private static CoordsLocalDataSource INSTANCE;
+    private static final String[] PROJECTION = {
+        CoordEntry.COLUMN_NAME_ENTRY_ID,
+        CoordEntry.COLUMN_NAME_LONGITUDE,
+        CoordEntry.COLUMN_NAME_LATITUDE,
+        CoordEntry.COLUMN_NAME_ALTITUDE,
+    };
 
     private CoordsDbHelper mDbHelper;
 
@@ -56,16 +62,12 @@ public class CoordsLocalDataSource implements CoordsDataSource {
 
     @Override
     public void getCoords(@NonNull LoadCoordsCallback callback) {
-        List<Coord> coords = new ArrayList<Coord>();
+        List<Coord> coords = new ArrayList<>();
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        String[] projection = {
-                CoordEntry.COLUMN_NAME_ENTRY_ID,
-                CoordEntry.COLUMN_NAME_LONGITUDE,
-                CoordEntry.COLUMN_NAME_LATITUDE,
-        };
 
-        Cursor c = db.query(CoordEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+        Cursor c = db.query(CoordEntry.TABLE_NAME, PROJECTION, null, null, null, null, null);
 
         if (c != null && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -91,17 +93,11 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     public void getCoord(String taskId, GetCoordCallback callback) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        String[] projection = {
-                CoordEntry.COLUMN_NAME_ENTRY_ID,
-                CoordEntry.COLUMN_NAME_LONGITUDE,
-                CoordEntry.COLUMN_NAME_LATITUDE,
-        };
-
         String selection = CoordEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
         String[] selectionArgs = { taskId };
 
         Cursor c = db.query(
-                CoordEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, null);
+                CoordEntry.TABLE_NAME, PROJECTION, selection, selectionArgs, null, null, null);
 
         Coord coord = null;
 
@@ -129,7 +125,9 @@ public class CoordsLocalDataSource implements CoordsDataSource {
                 c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_LONGITUDE));
         double latitude =
                 c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_LATITUDE));
-        return new Coord(itemId, longitude, latitude);
+        double altitude =
+                c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_ALTITUDE));
+        return new Coord(itemId, longitude, latitude, altitude);
     }
 
     @Override
@@ -140,6 +138,7 @@ public class CoordsLocalDataSource implements CoordsDataSource {
         values.put(CoordEntry.COLUMN_NAME_ENTRY_ID, coord.getId());
         values.put(CoordEntry.COLUMN_NAME_LONGITUDE, coord.getLongitude());
         values.put(CoordEntry.COLUMN_NAME_LATITUDE, coord.getLatitude());
+        values.put(CoordEntry.COLUMN_NAME_ALTITUDE, coord.getAltitude());
 
         db.insert(CoordEntry.TABLE_NAME, null, values);
 

@@ -38,7 +38,8 @@ public class CoordsDbHelper extends SQLiteOpenHelper {
                     CoordEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
                     CoordEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
                     CoordEntry.COLUMN_NAME_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    CoordEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE +
+                    CoordEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    CoordEntry.COLUMN_NAME_ALTITUDE + DOUBLE_TYPE +
             " )";
 
     public CoordsDbHelper(Context context) {
