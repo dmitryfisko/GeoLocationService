@@ -1,4 +1,4 @@
-package com.yandex.testapp.location;
+package com.yandex.testapp.util.location;
 
 import com.yandex.testapp.data.Coord;
 

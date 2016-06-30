@@ -1,4 +1,4 @@
-package com.yandex.testapp.location;
+package com.yandex.testapp.util.location;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,15 +12,15 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import com.yandex.testapp.data.Coord;
-import com.yandex.testapp.location.network.NetworkLocationInfo;
-import com.yandex.testapp.location.network.NetworkLocationListener;
-import com.yandex.testapp.location.network.WifiAndCellCollector;
+import com.yandex.testapp.util.location.network.NetworkLocationInfo;
+import com.yandex.testapp.util.location.network.NetworkLocationListener;
+import com.yandex.testapp.util.location.network.WifiAndCellCollector;
 
 import java.util.concurrent.TimeUnit;
 
 public class LocationTracker implements NetworkLocationListener {
 
-    private int mTimeInterval;
+    private long mTimeInterval;
     private LocationTask mLocationTask;
     private LocationsListener mCallback;
     private Context mContext;
@@ -48,7 +48,7 @@ public class LocationTracker implements NetworkLocationListener {
         public void onProviderDisabled(String s) {}
     };
 
-    public LocationTracker(int timeIntervalMs, Context context, LocationsListener callback) {
+    public LocationTracker(long timeIntervalMs, Context context, LocationsListener callback) {
         mTimeInterval = timeIntervalMs;
         mContext = context;
         mCallback = callback;
@@ -58,7 +58,9 @@ public class LocationTracker implements NetworkLocationListener {
 
     public void startTracking() {
         if (isPermissionGranted()) {
-            mGPSTracker.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
+            try {
+                mGPSTracker.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mGPSListener);
+            } catch (SecurityException ignored) {}
         }
         mNetworkTracker.startCollect();
 
@@ -71,8 +73,18 @@ public class LocationTracker implements NetworkLocationListener {
 
         mNetworkTracker.stopCollect();
         if (isPermissionGranted()) {
-            mGPSTracker.removeUpdates(mGPSListener);
+            try {
+                mGPSTracker.removeUpdates(mGPSListener);
+            } catch (SecurityException ignored) {}
         }
+    }
+
+    @Override
+    public void onNetworkLocationChanged(NetworkLocationInfo location) {
+        double longitude = Double.parseDouble(location.lbsLongtitude);
+        double latitude = Double.parseDouble(location.lbsLatitude);
+        Coord coord = new Coord(latitude, longitude);
+        mLastNetLocation = new LocationHistory(coord);
     }
 
     private boolean isPermissionGranted() {
@@ -88,14 +100,6 @@ public class LocationTracker implements NetworkLocationListener {
             return isFineLocGranted || isCoarseLocGranted;
         }
         return true;
-    }
-
-    @Override
-    public void onNetworkLocationChanged(NetworkLocationInfo location) {
-        double longitude = Double.parseDouble(location.lbsLongtitude);
-        double latitude = Double.parseDouble(location.lbsLatitude);
-        Coord coord = new Coord(latitude, longitude);
-        mLastNetLocation = new LocationHistory(coord);
     }
 
     class LocationTask extends AsyncTask<Void, Void, Void> {

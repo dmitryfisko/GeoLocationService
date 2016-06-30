@@ -2,18 +2,18 @@ package com.yandex.testapp.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.location.LocationListener;
-import android.os.AsyncTask;
 import android.os.IBinder;
 
 import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.data.source.CoordsDataSource;
 import com.yandex.testapp.data.source.CoordsProvider;
 import com.yandex.testapp.data.source.local.CoordsLocalDataSource;
-import com.yandex.testapp.location.LocationTracker;
-import com.yandex.testapp.location.LocationsListener;
+import com.yandex.testapp.util.location.LocationTracker;
+import com.yandex.testapp.util.location.LocationsListener;
 
 public class GeoService extends Service implements LocationsListener {
+
+    long DEFAULT_TIME_INTERVAL = 3000;
 
     private CoordsProvider mCoordsProvider;
     private LocationTracker mLocationTracker;
@@ -26,9 +26,14 @@ public class GeoService extends Service implements LocationsListener {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mLocationTracker = new LocationTracker(2000, this, this);
+        long timeInterval = DEFAULT_TIME_INTERVAL;
+        if (intent != null) {
+             timeInterval = intent.getLongExtra("time_interval", DEFAULT_TIME_INTERVAL);
+        }
+
+        mLocationTracker = new LocationTracker(timeInterval, this, this);
         mLocationTracker.startTracking();
-        return START_STICKY;
+        return START_REDELIVER_INTENT;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.yandex.testapp.location.network;
+package com.yandex.testapp.util.location.network;
 
 import android.content.Context;
 import android.net.wifi.ScanResult;

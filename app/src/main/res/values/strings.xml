@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Test App</string>
+    <string name="app_name">Geo Location Service</string>
     <string name="action_settings">Settings</string>
     <string name="geo_service">Geo Service</string>
+    <string name="geo_switch_on">Geo Service On</string>
+    <string name="geo_switch">Geo Service</string>
 </resources>
