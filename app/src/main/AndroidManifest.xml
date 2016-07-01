@@ -35,6 +35,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.coords.CoordsActivity"
+            android:parentActivityName=".ui.home.HomeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.home.HomeActivity" />
+        </activity>
+
         <service android:exported="false"
             android:label="@string/geo_service"
             android:name=".service.GeoService" />

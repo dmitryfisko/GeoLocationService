@@ -35,7 +35,7 @@ public class CoordsProvider implements CoordsDataSource {
 
     private final CoordsDataSource mTasksLocalDataSource;
 
-    private ArrayList<DataChangedCallback> mDataChangedListeners;
+    private ArrayList<DataNewItemAddedCallback> mDataChangedListeners;
 
     Map<String, Coord> mCachedTasks;
 
@@ -51,10 +51,6 @@ public class CoordsProvider implements CoordsDataSource {
             INSTANCE = new CoordsProvider(coordsLocalDataSource);
         }
         return INSTANCE;
-    }
-
-    public static void destroyInstance() {
-        INSTANCE = null;
     }
 
     @Override
@@ -96,17 +92,17 @@ public class CoordsProvider implements CoordsDataSource {
         }
         mCachedTasks.put(coord.getId(), coord);
 
-        for(DataChangedCallback callback: mDataChangedListeners) {
-            callback.onDataChanged();
+        for(DataNewItemAddedCallback callback: mDataChangedListeners) {
+            callback.onDataNewItemAdded(coord);
         }
     }
 
-    public void addChangesCallback(@NonNull DataChangedCallback callback) {
+    public void addChangesCallback(@NonNull DataNewItemAddedCallback callback) {
         mDataChangedListeners.add(callback);
 
     }
 
-    public void removeChangesCallback(@NonNull DataChangedCallback callback) {
+    public void removeChangesCallback(@NonNull DataNewItemAddedCallback callback) {
         mDataChangedListeners.remove(callback);
     }
 
@@ -135,11 +131,6 @@ public class CoordsProvider implements CoordsDataSource {
                 callback.onDataNotAvailable();
             }
         });
-    }
-
-    @Override
-    public void refreshCoords() {
-        mCacheIsDirty = true;
     }
 
     @Override

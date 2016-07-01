@@ -14,40 +14,33 @@
  * limitations under the License.
  */
 
-package com.yandex.testapp.data.source;
+package com.yandex.testapp.ui.coords;
 
 import com.yandex.testapp.data.Coord;
+import com.yandex.testapp.ui.BasePresenter;
+import com.yandex.testapp.ui.BaseView;
 
 import java.util.List;
 
-public interface CoordsDataSource {
+public interface CoordsContract {
 
-    interface LoadCoordsCallback {
+    interface View extends BaseView<Presenter> {
 
-        void onCoordsLoaded(List<Coord> coords);
+        void showCoords(List<Coord> coords);
 
-        void onDataNotAvailable();
+        void showNewCoord(Coord coord);
+
+        void showLoadingFooter();
+
+        void hideLoadingFooter();
+
+        void showDataNotAvaliable();
+
+        void hideDataNotAvaliable();
     }
 
-    interface GetCoordCallback {
+    interface Presenter extends BasePresenter {
 
-        void onCoordLoaded(Coord coordinate);
-
-        void onDataNotAvailable();
+        void removeCallback();
     }
-
-    interface DataNewItemAddedCallback {
-
-        void onDataNewItemAdded(Coord coord);
-    }
-
-    void getCoords(LoadCoordsCallback callback);
-
-    void getCoord(String taskId, GetCoordCallback callback);
-
-    void saveCoord(Coord coordinate);
-
-    void deleteAllCoords();
-
-    void deleteCoord(String taskId);
 }

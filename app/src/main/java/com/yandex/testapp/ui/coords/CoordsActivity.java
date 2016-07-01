@@ -1,4 +1,4 @@
-package com.yandex.testapp.ui.home;
+package com.yandex.testapp.ui.coords;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,33 +9,25 @@ import android.view.View;
 import com.yandex.testapp.R;
 import com.yandex.testapp.util.ActivityUtils;
 
-public class HomeActivity extends AppCompatActivity {
+public class CoordsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.home_activity);
+        setContentView(R.layout.coords_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        HomeFragment tasksFragment =
-                (HomeFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+        CoordsFragment tasksFragment =
+                (CoordsFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (tasksFragment == null) {
-            tasksFragment = new HomeFragment();
+            tasksFragment = new CoordsFragment();
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), tasksFragment, R.id.content_frame);
         }
-        new HomePresenter(this, tasksFragment);
+        new CoordsPresenter(this, tasksFragment);
 
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
     }
 
 }
