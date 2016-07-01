@@ -1,13 +1,11 @@
 package com.yandex.testapp.ui.home;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
 
 import com.yandex.testapp.service.GeoService;
+import com.yandex.testapp.util.ServiceUtils;
 
 public class HomePresenter implements HomeContract.Presenter {
 
@@ -29,7 +27,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void serviceStateChanged(boolean isSwitchOn) {
-        boolean isServiceOn = isGeoServiceRunning();
+        boolean isServiceOn = ServiceUtils.isGeoServiceRunning(mContext);
         if(isServiceOn == isSwitchOn) {
             return;
         }
@@ -43,7 +41,7 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void start() {
-        if (isGeoServiceRunning()) {
+        if (ServiceUtils.isGeoServiceRunning(mContext)) {
             mHomeView.setSwitchState(true);
         } else {
             mHomeView.setSwitchState(false);
@@ -59,24 +57,24 @@ public class HomePresenter implements HomeContract.Presenter {
 
     @Override
     public void startGeoServiceManually() {
+        String textTimeInterval = mHomeView.getTimeInterval();
+        double timeInterval;
+        try {
+            timeInterval = Double.parseDouble(textTimeInterval);
+        } catch (NumberFormatException e) {
+            timeInterval = 0;
+        }
+
         Intent intent = new Intent(mContext, GeoService.class);
+        if (timeInterval > 0) {
+            intent.putExtra("time_interval", (long)(timeInterval * 1000));
+        }
         mContext.startService(intent);
     }
 
     private void stopGeoService() {
         Intent intent = new Intent(mContext, GeoService.class);
         mContext.stopService(intent);
-    }
-
-    private boolean isGeoServiceRunning() {
-        String serviceName = GeoService.class.getName();
-        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceName.equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

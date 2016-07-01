@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.yandex.testapp.R;
 import com.yandex.testapp.data.Coord;
+import com.yandex.testapp.util.ActivityUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ public class CoordsListAdapter extends BaseAdapter {
         TextView longitudeText;
         TextView latitudeText;
         TextView altitudeText;
+        TextView timestampText;
     }
 
     @Override
@@ -67,6 +69,7 @@ public class CoordsListAdapter extends BaseAdapter {
             holder.longitudeText = (TextView) view.findViewById(R.id.longitude);
             holder.latitudeText = (TextView) view.findViewById(R.id.latitude);
             holder.altitudeText = (TextView) view.findViewById(R.id.altitude);
+            holder.timestampText = (TextView) view.findViewById(R.id.timestamp);
 
             fillHolder(holder, coord);
             view.setTag(holder);
@@ -82,9 +85,11 @@ public class CoordsListAdapter extends BaseAdapter {
         double latitude = coord.getLatitude();
         double longitude = coord.getLongitude();
         double altitude = coord.getAltitude();
+        long timestamp = coord.getTimestamp();
         holder.longitudeText.setText(String.valueOf(latitude));
         holder.latitudeText.setText(String.valueOf(longitude));
         holder.altitudeText.setText(String.valueOf(altitude));
+        holder.timestampText.setText(ActivityUtils.getReadableDate(timestamp));
     }
 
 

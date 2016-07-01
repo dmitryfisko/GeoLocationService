@@ -24,6 +24,8 @@ public interface HomeContract {
     interface View extends BaseView<Presenter> {
 
         void setSwitchState(boolean isOn);
+
+        String getTimeInterval();
     }
 
     interface Presenter extends BasePresenter {

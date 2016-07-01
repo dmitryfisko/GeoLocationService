@@ -23,8 +23,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import com.yandex.testapp.data.Coord;
-import com.yandex.testapp.data.source.local.CoordsPersistenceContract.CoordEntry;
 import com.yandex.testapp.data.source.CoordsDataSource;
+import com.yandex.testapp.data.source.local.CoordsPersistenceContract.CoordEntry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,15 +39,15 @@ public class CoordsLocalDataSource implements CoordsDataSource {
 
     private static CoordsLocalDataSource INSTANCE;
     private static final String[] PROJECTION = {
-        CoordEntry.COLUMN_NAME_ENTRY_ID,
+        CoordEntry._ID,
         CoordEntry.COLUMN_NAME_LONGITUDE,
         CoordEntry.COLUMN_NAME_LATITUDE,
         CoordEntry.COLUMN_NAME_ALTITUDE,
+        CoordEntry.COLUMN_NAME_TIMESTAMP,
     };
 
     private CoordsDbHelper mDbHelper;
 
-    // Prevent direct instantiation.
     private CoordsLocalDataSource(@NonNull Context context) {
         checkNotNull(context);
         mDbHelper = new CoordsDbHelper(context);
@@ -64,8 +64,6 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     public void getCoords(@NonNull LoadCoordsCallback callback) {
         List<Coord> coords = new ArrayList<>();
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-
 
         Cursor c = db.query(CoordEntry.TABLE_NAME, PROJECTION, null, null, null, null, null);
 
@@ -90,11 +88,11 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     }
 
     @Override
-    public void getCoord(String taskId, GetCoordCallback callback) {
+    public void getCoord(long coordId, GetCoordCallback callback) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-        String selection = CoordEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        String[] selectionArgs = { taskId };
+        String selection = CoordEntry._ID + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(coordId) };
 
         Cursor c = db.query(
                 CoordEntry.TABLE_NAME, PROJECTION, selection, selectionArgs, null, null, null);
@@ -119,15 +117,17 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     }
 
     private Coord readCoord(Cursor c) {
-        String itemId =
-                c.getString(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_ENTRY_ID));
+        long itemId =
+                c.getLong(c.getColumnIndexOrThrow(CoordEntry._ID));
         double longitude =
                 c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_LONGITUDE));
         double latitude =
                 c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_LATITUDE));
         double altitude =
                 c.getDouble(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_ALTITUDE));
-        return new Coord(itemId, longitude, latitude, altitude);
+        long time =
+                c.getLong(c.getColumnIndexOrThrow(CoordEntry.COLUMN_NAME_TIMESTAMP));
+        return new Coord(itemId, longitude, latitude, altitude, time);
     }
 
     @Override
@@ -135,10 +135,10 @@ public class CoordsLocalDataSource implements CoordsDataSource {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(CoordEntry.COLUMN_NAME_ENTRY_ID, coord.getId());
         values.put(CoordEntry.COLUMN_NAME_LONGITUDE, coord.getLongitude());
         values.put(CoordEntry.COLUMN_NAME_LATITUDE, coord.getLatitude());
         values.put(CoordEntry.COLUMN_NAME_ALTITUDE, coord.getAltitude());
+        values.put(CoordEntry.COLUMN_NAME_TIMESTAMP, coord.getTimestamp());
 
         db.insert(CoordEntry.TABLE_NAME, null, values);
 
@@ -155,11 +155,11 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     }
 
     @Override
-    public void deleteCoord(@NonNull String taskId) {
+    public void deleteCoord(long coordId) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        String selection = CoordEntry.COLUMN_NAME_ENTRY_ID + " LIKE ?";
-        String[] selectionArgs = { taskId };
+        String selection = CoordEntry._ID + " LIKE ?";
+        String[] selectionArgs = { String.valueOf(coordId) };
 
         db.delete(CoordEntry.TABLE_NAME, selection, selectionArgs);
 

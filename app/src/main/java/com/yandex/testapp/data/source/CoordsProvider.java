@@ -37,14 +37,14 @@ public class CoordsProvider implements CoordsDataSource {
     public static String EVENT_NEW_DATA_ITEM_ADDED = "EVENT_NEW_DATA_ITEM_ADDED";
     private static CoordsProvider INSTANCE = null;
 
-    private final CoordsDataSource mTasksLocalDataSource;
+    private final CoordsDataSource mCoordsLocalDataSource;
 
-    Map<String, Coord> mCachedTasks;
+    Map<String, Coord> mCachedCoords;
 
     boolean mCacheIsDirty = false;
 
-    private CoordsProvider(@NonNull CoordsDataSource tasksLocalDataSource) {
-        mTasksLocalDataSource = tasksLocalDataSource;
+    private CoordsProvider(@NonNull CoordsDataSource coordsLocalDataSource) {
+        mCoordsLocalDataSource = coordsLocalDataSource;
     }
 
     public static CoordsProvider getInstance(@NonNull CoordsDataSource coordsLocalDataSource) {
@@ -54,24 +54,20 @@ public class CoordsProvider implements CoordsDataSource {
         return INSTANCE;
     }
 
-    public static void destroyInstance() {
-        INSTANCE = null;
-    }
-
     @Override
     public void getCoords(@NonNull final LoadCoordsCallback callback) {
         checkNotNull(callback);
 
-        if (mCachedTasks != null && !mCacheIsDirty) {
-            callback.onCoordsLoaded(new ArrayList<>(mCachedTasks.values()));
+        if (mCachedCoords != null && !mCacheIsDirty) {
+            callback.onCoordsLoaded(new ArrayList<>(mCachedCoords.values()));
             return;
         }
 
-        mTasksLocalDataSource.getCoords(new LoadCoordsCallback() {
+        mCoordsLocalDataSource.getCoords(new LoadCoordsCallback() {
             @Override
             public void onCoordsLoaded(List<Coord> coords) {
                 refreshCache(coords);
-                callback.onCoordsLoaded(new ArrayList<>(mCachedTasks.values()));
+                callback.onCoordsLoaded(new ArrayList<>(mCachedCoords.values()));
             }
 
             @Override
@@ -81,23 +77,22 @@ public class CoordsProvider implements CoordsDataSource {
         });
     }
 
-
-
     @Override
     public void saveCoord(Context context, Coord coord) {
         if (coord == null) {
             return;
         }
 
-        mTasksLocalDataSource.saveCoord(context, coord);
+        mCoordsLocalDataSource.saveCoord(context, coord);
 
-        // Do in memory cache update to keep the app UI up to date
-        if (mCachedTasks == null) {
-            mCachedTasks = new LinkedHashMap<>();
+        if (mCachedCoords == null) {
+            mCachedCoords = new LinkedHashMap<>();
         }
-        mCachedTasks.put(coord.getId(), coord);
+        Coord coordWithID = new Coord(mCachedCoords.size() + 1, coord.getLongitude(),
+                coord.getLatitude(), coord.getAltitude(), coord.getTimestamp());
+        mCachedCoords.put(coordWithID.getIdString(), coordWithID);
 
-        sendMessageNewDataItem(context, coord);
+        sendMessageNewDataItem(context, coordWithID);
     }
 
     private void sendMessageNewDataItem(Context context, Coord coord) {
@@ -107,22 +102,22 @@ public class CoordsProvider implements CoordsDataSource {
     }
 
     @Override
-    public void getCoord(@NonNull final String taskId, @NonNull final GetCoordCallback callback) {
-        checkNotNull(taskId);
+    public void getCoord(final long coordId, @NonNull final GetCoordCallback callback) {
+        checkNotNull(coordId);
         checkNotNull(callback);
 
-        Coord cachedTask = getTaskWithId(taskId);
+        Coord cachedCoord = getCoordWithId(coordId);
 
         // Respond immediately with cache if available
-        if (cachedTask != null) {
-            callback.onCoordLoaded(cachedTask);
+        if (cachedCoord != null) {
+            callback.onCoordLoaded(cachedCoord);
             return;
         }
 
-        mTasksLocalDataSource.getCoord(taskId, new GetCoordCallback() {
+        mCoordsLocalDataSource.getCoord(coordId, new GetCoordCallback() {
             @Override
-            public void onCoordLoaded(Coord task) {
-                callback.onCoordLoaded(task);
+            public void onCoordLoaded(Coord coord) {
+                callback.onCoordLoaded(coord);
             }
 
             @Override
@@ -135,38 +130,38 @@ public class CoordsProvider implements CoordsDataSource {
 
     @Override
     public void deleteAllCoords() {
-        mTasksLocalDataSource.deleteAllCoords();
+        mCoordsLocalDataSource.deleteAllCoords();
 
-        if (mCachedTasks == null) {
-            mCachedTasks = new LinkedHashMap<>();
+        if (mCachedCoords == null) {
+            mCachedCoords = new LinkedHashMap<>();
         }
-        mCachedTasks.clear();
+        mCachedCoords.clear();
     }
 
     @Override
-    public void deleteCoord(@NonNull String taskId) {
-        mTasksLocalDataSource.deleteCoord(checkNotNull(taskId));
-        mCachedTasks.remove(taskId);
+    public void deleteCoord(long coordId) {
+        mCoordsLocalDataSource.deleteCoord(checkNotNull(coordId));
+        mCachedCoords.remove(String.valueOf(coordId));
     }
 
     private void refreshCache(List<Coord> coords) {
-        if (mCachedTasks == null) {
-            mCachedTasks = new LinkedHashMap<>();
+        if (mCachedCoords == null) {
+            mCachedCoords = new LinkedHashMap<>();
         }
-        mCachedTasks.clear();
-        for (Coord task : coords) {
-            mCachedTasks.put(task.getId(), task);
+        mCachedCoords.clear();
+        for (Coord coord : coords) {
+            mCachedCoords.put(coord.getIdString(), coord);
         }
         mCacheIsDirty = false;
     }
 
     @Nullable
-    private Coord getTaskWithId(@NonNull String id) {
+    private Coord getCoordWithId(long id) {
         checkNotNull(id);
-        if (mCachedTasks == null || mCachedTasks.isEmpty()) {
+        if (mCachedCoords == null || mCachedCoords.isEmpty()) {
             return null;
         } else {
-            return mCachedTasks.get(id);
+            return mCachedCoords.get(String.valueOf(id));
         }
     }
 }

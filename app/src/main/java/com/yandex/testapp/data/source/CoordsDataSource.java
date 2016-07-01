@@ -40,11 +40,11 @@ public interface CoordsDataSource {
 
     void getCoords(LoadCoordsCallback callback);
 
-    void getCoord(String taskId, GetCoordCallback callback);
+    void getCoord(long coordId, GetCoordCallback callback);
 
     void saveCoord(Context context, Coord coordinate);
 
     void deleteAllCoords();
 
-    void deleteCoord(String taskId);
+    void deleteCoord(long coordId);
 }

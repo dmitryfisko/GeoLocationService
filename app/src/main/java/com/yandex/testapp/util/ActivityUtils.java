@@ -21,11 +21,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * This provides methods to help Activities load their UI.
- */
 public class ActivityUtils {
 
     /**
@@ -40,6 +41,13 @@ public class ActivityUtils {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(frameId, fragment);
         transaction.commit();
+    }
+
+
+    public static String getReadableDate(long timestamp_ms) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        Date resultDate = new Date(timestamp_ms);
+        return  sdf.format(resultDate);
     }
 
 }

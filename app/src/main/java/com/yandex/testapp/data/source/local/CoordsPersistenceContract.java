@@ -24,9 +24,9 @@ public final class CoordsPersistenceContract {
 
     public static abstract class CoordEntry implements BaseColumns {
         public static final String TABLE_NAME = "coordinate";
-        public static final String COLUMN_NAME_ENTRY_ID = "entryid";
         public static final String COLUMN_NAME_LONGITUDE = "longitude";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_ALTITUDE = "altitude";
+        public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 
 import com.yandex.testapp.R;
 
@@ -14,12 +15,14 @@ public class HomeFragment extends Fragment implements HomeContract.View, Compoun
 
     private HomeContract.Presenter mPresenter;
     private CompoundButton mServiceStateButton;
+    private EditText mTimeIntervalEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.home_fragment, container, false);
 
+        mTimeIntervalEdit = (EditText) root.findViewById(R.id.time_interval_edit_text);
         mServiceStateButton = (CompoundButton) root.findViewById(R.id.geo_service_state);
         mServiceStateButton.setOnCheckedChangeListener(this);
 
@@ -35,6 +38,11 @@ public class HomeFragment extends Fragment implements HomeContract.View, Compoun
     @Override
     public void setSwitchState(boolean isOn) {
         mServiceStateButton.setChecked(isOn);
+    }
+
+    @Override
+    public String getTimeInterval() {
+        return mTimeIntervalEdit.getText().toString();
     }
 
     @Override

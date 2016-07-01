@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.yandex.testapp.R;
@@ -17,8 +19,9 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
     private CoordsContract.Presenter mPresenter;
 
     private ListView mListView;
-    private View mListFooter;
+    private View mListFooterView;
     private View mDataNotAvaliableView;
+    private FrameLayout mListFooterContainer;
 
     private CoordsListAdapter mListAdapter;
 
@@ -29,9 +32,12 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
 
         mListView = (ListView) root.findViewById(R.id.coords_list);
         mDataNotAvaliableView = root.findViewById(R.id.data_not_avaliable);
-        mListFooter = inflater.inflate(R.layout.coords_fragment_list_footer, null, false);
+        mListFooterContainer = new FrameLayout(getContext());
+        mListFooterView = inflater.inflate(R.layout.coords_fragment_list_footer,
+                new LinearLayout(getContext()), false);
 
         mListAdapter = new CoordsListAdapter(getActivity());
+        mListView.addFooterView(mListFooterContainer);
         mListView.setAdapter(mListAdapter);
 
         return root;
@@ -55,12 +61,12 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
 
     @Override
     public void showLoadingFooter() {
-        mListView.addFooterView(mListFooter);
+        mListFooterContainer.addView(mListFooterView);
     }
 
     @Override
     public void hideLoadingFooter() {
-        mListView.removeFooterView(mListFooter);
+        mListFooterContainer.removeAllViews();
     }
 
     @Override

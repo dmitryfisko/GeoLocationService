@@ -23,23 +23,22 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.yandex.testapp.data.source.local.CoordsPersistenceContract.CoordEntry;
 
 public class CoordsDbHelper extends SQLiteOpenHelper {
+
     public static final int DATABASE_VERSION = 1;
 
     public static final String DATABASE_NAME = "Coordinates.db";
-
-    private static final String TEXT_TYPE = " TEXT";
-
+    private static final String INTEGER_TYPE = " INTEGER";
     private static final String DOUBLE_TYPE = " DOUBLE";
-
     private static final String COMMA_SEP = ",";
+
 
     private static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + CoordEntry.TABLE_NAME + " (" +
-                    CoordEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
-                    CoordEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
+                    CoordEntry._ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     CoordEntry.COLUMN_NAME_LATITUDE + DOUBLE_TYPE + COMMA_SEP +
                     CoordEntry.COLUMN_NAME_LONGITUDE + DOUBLE_TYPE + COMMA_SEP +
-                    CoordEntry.COLUMN_NAME_ALTITUDE + DOUBLE_TYPE +
+                    CoordEntry.COLUMN_NAME_ALTITUDE + DOUBLE_TYPE + COMMA_SEP +
+                    CoordEntry.COLUMN_NAME_TIMESTAMP + INTEGER_TYPE +
             " )";
 
     public CoordsDbHelper(Context context) {

@@ -17,7 +17,10 @@ public class CoordsActivity extends AppCompatActivity {
         setContentView(R.layout.coords_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
 
         CoordsFragment tasksFragment =
                 (CoordsFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);

@@ -37,7 +37,8 @@ public class LocationTracker implements NetworkLocationListener {
             double longitude = location.getLongitude();
             double latitude = location.getLatitude();
             double altitude = location.getAltitude();
-            Coord coord = new Coord(longitude, latitude, altitude);
+            long timestamp = System.currentTimeMillis();
+            Coord coord = new Coord(longitude, latitude, altitude, timestamp);
             mLastGPSLocation = new LocationHistory(coord);
         }
 
@@ -89,7 +90,8 @@ public class LocationTracker implements NetworkLocationListener {
         double longitude = Double.parseDouble(location.lbsLongtitude);
         double latitude = Double.parseDouble(location.lbsLatitude);
         double altitude = Double.parseDouble(location.lbsAltitude);
-        Coord coord = new Coord(latitude, longitude, altitude);
+        long time = System.currentTimeMillis();
+        Coord coord = new Coord(latitude, longitude, altitude, time);
         mLastNetLocation = new LocationHistory(coord);
     }
 
@@ -111,17 +113,26 @@ public class LocationTracker implements NetworkLocationListener {
     class LocationTask extends AsyncTask<Void, Void, Void> {
 
         private Coord getLocation() {
+            Coord coord;
             if (mLastGPSLocation != null && mLastGPSLocation.isValid(mTimeInterval)) {
-                return mLastGPSLocation.getCoord();
+                coord = mLastGPSLocation.getCoord();
             } else if (mLastNetLocation != null && mLastNetLocation.isValid(mTimeInterval)) {
-                return mLastNetLocation.getCoord();
+                coord = mLastNetLocation.getCoord();
             } else if (mLastGPSLocation != null) {
-                return mLastGPSLocation.getCoord();
+                coord = mLastGPSLocation.getCoord();
             } else if (mLastNetLocation != null) {
-                return mLastNetLocation.getCoord();
+                coord = mLastNetLocation.getCoord();
+            } else {
+                coord = null;
+            }
+
+            if (coord != null) {
+                return new Coord(coord.getLongitude(), coord.getLatitude(),
+                        coord.getAltitude(), coord.getTimestamp());
             } else {
                 return null;
             }
+
         }
 
         @Override
@@ -141,11 +152,9 @@ public class LocationTracker implements NetworkLocationListener {
     private class LocationHistory {
 
         private Coord mCoord;
-        private long mUpdatedTime;
 
         public LocationHistory(Coord coord) {
             mCoord = coord;
-            mUpdatedTime = System.currentTimeMillis();
         }
 
         public Coord getCoord() {
@@ -154,7 +163,7 @@ public class LocationTracker implements NetworkLocationListener {
 
         public boolean isValid(long timeInterval) {
             long currentTime = System.currentTimeMillis();
-            return currentTime - mUpdatedTime <= timeInterval;
+            return currentTime - mCoord.getTimestamp() <= timeInterval;
         }
 
     }

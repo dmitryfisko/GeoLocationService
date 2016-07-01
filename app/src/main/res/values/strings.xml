@@ -5,8 +5,12 @@
     <string name="geo_switch_on">Geo Service On</string>
     <string name="geo_switch">Geo Service</string>
     <string name="no_list_items">No items to display.</string>
-    <string name="longitude">Долгота:</string>
-    <string name="latitude">Широта:</string>
-    <string name="altitude">Высота:</string>
-    <string name="coordinates_list">Cписок координат</string>
+    <string name="longitude">Longitude:</string>
+    <string name="latitude">Latitude:</string>
+    <string name="altitude">Altitude:</string>
+    <string name="timestamp">Time:</string>
+    <string name="coordinates_list">Coordinates list</string>
+    <string name="time_interval">Requesting interval</string>
+    <string name="seconds">seconds</string>
+    <string name="time_interval_start_value">21.0</string>
 </resources>

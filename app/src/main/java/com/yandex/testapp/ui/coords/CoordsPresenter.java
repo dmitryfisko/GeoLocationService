@@ -10,6 +10,7 @@ import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.data.source.CoordsDataSource;
 import com.yandex.testapp.data.source.CoordsProvider;
 import com.yandex.testapp.data.source.local.CoordsLocalDataSource;
+import com.yandex.testapp.util.ServiceUtils;
 
 import java.util.List;
 
@@ -45,15 +46,16 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
 
     @Override
     public void start() {
-        mCoordsProvider.getCoords(this);
         mCoordsView.showLoadingFooter();
+        mCoordsProvider.getCoords(this);
     }
 
     @Override
     public void onCoordsLoaded(List<Coord> coords) {
         mCoordsView.showCoords(coords);
-        mCoordsView.hideLoadingFooter();
-
+        if (!ServiceUtils.isGeoServiceRunning(mContext)) {
+            mCoordsView.hideLoadingFooter();
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.yandex.testapp.util.location.LocationsListener;
 
 public class GeoService extends Service implements LocationsListener {
 
-    long DEFAULT_TIME_INTERVAL = 3000;
+    long DEFAULT_TIME_INTERVAL = 10000;
 
     private CoordsProvider mCoordsProvider;
     private LocationTracker mLocationTracker;
