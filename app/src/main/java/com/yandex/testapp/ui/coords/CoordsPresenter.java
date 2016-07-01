@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.data.source.CoordsDataSource;
@@ -37,8 +36,9 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
 
         CoordsDataSource dataSource = CoordsLocalDataSource.getInstance(context);
         mCoordsProvider = CoordsProvider.getInstance(dataSource);
-        LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,
-                new IntentFilter(CoordsProvider.EVENT_NEW_DATA_ITEM_ADDED));
+
+        IntentFilter intentFilter = new IntentFilter(CoordsProvider.EVENT_NEW_DATA_ITEM_ADDED);
+        mContext.registerReceiver(mMessageReceiver, intentFilter);
 
         isDataWasNotAvaliable = false;
 
@@ -74,6 +74,6 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
 
     @Override
     public void unregisterReceiver() {
-        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(mMessageReceiver);
+        mContext.unregisterReceiver(mMessageReceiver);
     }
 }

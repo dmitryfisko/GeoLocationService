@@ -49,6 +49,7 @@
 
         <service android:exported="false"
             android:label="@string/geo_service"
+            android:process=":geo_service_process"
             android:name=".service.GeoService" />
 
     </application>

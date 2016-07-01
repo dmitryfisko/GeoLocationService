@@ -85,7 +85,6 @@ public class CoordsListAdapter extends BaseAdapter {
     private void fillHolder(ViewHolder holder, Coord coord) {
         DecimalFormat formatter = new DecimalFormat("#.#######");
 
-
         double latitude = coord.getLatitude();
         double longitude = coord.getLongitude();
         double altitude = coord.getAltitude();

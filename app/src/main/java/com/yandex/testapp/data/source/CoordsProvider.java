@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.yandex.testapp.data.Coord;
 
@@ -34,7 +33,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class CoordsProvider implements CoordsDataSource {
 
-    public static String EVENT_NEW_DATA_ITEM_ADDED = "EVENT_NEW_DATA_ITEM_ADDED";
+    public static String EVENT_NEW_DATA_ITEM_ADDED = "com.yandex.testapp.EVENT_NEW_DATA_ITEM_ADDED";
     private static CoordsProvider INSTANCE = null;
 
     private final CoordsDataSource mCoordsLocalDataSource;
@@ -97,8 +96,9 @@ public class CoordsProvider implements CoordsDataSource {
 
     private void sendMessageNewDataItem(Context context, Coord coord) {
         Intent intent = new Intent(EVENT_NEW_DATA_ITEM_ADDED);
+//        intent.setClassName("com.yandex.testapp", "com.yandex.testapp.CoordsActivity");
         intent.putExtra("coord", coord);
-        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        context.sendBroadcast(intent);
     }
 
     @Override
