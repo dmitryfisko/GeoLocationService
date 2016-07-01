@@ -131,7 +131,7 @@ public class CoordsLocalDataSource implements CoordsDataSource {
     }
 
     @Override
-    public void saveCoord(Coord coord) {
+    public void saveCoord(Context context, Coord coord) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -143,12 +143,6 @@ public class CoordsLocalDataSource implements CoordsDataSource {
         db.insert(CoordEntry.TABLE_NAME, null, values);
 
         db.close();
-    }
-
-    @Override
-    public void refreshCoords() {
-        // Not required because the {@link TasksRepository} handles the logic of refreshing the
-        // tasks from all the available data sources.
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package com.yandex.testapp.data.source;
 
+import android.content.Context;
+
 import com.yandex.testapp.data.Coord;
 
 import java.util.List;
@@ -36,16 +38,11 @@ public interface CoordsDataSource {
         void onDataNotAvailable();
     }
 
-    interface DataNewItemAddedCallback {
-
-        void onDataNewItemAdded(Coord coord);
-    }
-
     void getCoords(LoadCoordsCallback callback);
 
     void getCoord(String taskId, GetCoordCallback callback);
 
-    void saveCoord(Coord coordinate);
+    void saveCoord(Context context, Coord coordinate);
 
     void deleteAllCoords();
 

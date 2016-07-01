@@ -43,7 +43,7 @@ public class GeoService extends Service implements LocationsListener {
 
     @Override
     public void onLocationChanged(Coord coord) {
-        mCoordsProvider.saveCoord(coord);
+        mCoordsProvider.saveCoord(this, coord);
     }
 
     @Override

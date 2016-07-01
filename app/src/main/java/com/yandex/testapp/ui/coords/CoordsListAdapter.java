@@ -78,7 +78,6 @@ public class CoordsListAdapter extends BaseAdapter {
         return view;
     }
 
-
     private void fillHolder(ViewHolder holder, Coord coord) {
         double latitude = coord.getLatitude();
         double longitude = coord.getLongitude();

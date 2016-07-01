@@ -9,7 +9,6 @@ import android.widget.ListView;
 
 import com.yandex.testapp.R;
 import com.yandex.testapp.data.Coord;
-import com.yandex.testapp.ui.home.HomeContract;
 
 import java.util.List;
 
@@ -29,13 +28,19 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
         View root = inflater.inflate(R.layout.coords_fragment, container, false);
 
         mListView = (ListView) root.findViewById(R.id.coords_list);
-        mDataNotAvaliableView = root.findViewById(R.id.data_not_avaliable);;
+        mDataNotAvaliableView = root.findViewById(R.id.data_not_avaliable);
         mListFooter = inflater.inflate(R.layout.coords_fragment_list_footer, null, false);
 
         mListAdapter = new CoordsListAdapter(getActivity());
         mListView.setAdapter(mListAdapter);
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
     }
 
     @Override
@@ -78,6 +83,6 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mPresenter.removeCallback();
+        mPresenter.unregisterReceiver();
     }
 }

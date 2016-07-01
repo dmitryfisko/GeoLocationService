@@ -16,8 +16,11 @@
 
 package com.yandex.testapp.data.source;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.yandex.testapp.data.Coord;
 
@@ -31,11 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class CoordsProvider implements CoordsDataSource {
 
+    public static String EVENT_NEW_DATA_ITEM_ADDED = "EVENT_NEW_DATA_ITEM_ADDED";
     private static CoordsProvider INSTANCE = null;
 
     private final CoordsDataSource mTasksLocalDataSource;
-
-    private ArrayList<DataNewItemAddedCallback> mDataChangedListeners;
 
     Map<String, Coord> mCachedTasks;
 
@@ -43,7 +45,6 @@ public class CoordsProvider implements CoordsDataSource {
 
     private CoordsProvider(@NonNull CoordsDataSource tasksLocalDataSource) {
         mTasksLocalDataSource = tasksLocalDataSource;
-        mDataChangedListeners = new ArrayList<>();
     }
 
     public static CoordsProvider getInstance(@NonNull CoordsDataSource coordsLocalDataSource) {
@@ -51,6 +52,10 @@ public class CoordsProvider implements CoordsDataSource {
             INSTANCE = new CoordsProvider(coordsLocalDataSource);
         }
         return INSTANCE;
+    }
+
+    public static void destroyInstance() {
+        INSTANCE = null;
     }
 
     @Override
@@ -79,12 +84,12 @@ public class CoordsProvider implements CoordsDataSource {
 
 
     @Override
-    public void saveCoord(Coord coord) {
+    public void saveCoord(Context context, Coord coord) {
         if (coord == null) {
             return;
         }
 
-        mTasksLocalDataSource.saveCoord(coord);
+        mTasksLocalDataSource.saveCoord(context, coord);
 
         // Do in memory cache update to keep the app UI up to date
         if (mCachedTasks == null) {
@@ -92,20 +97,14 @@ public class CoordsProvider implements CoordsDataSource {
         }
         mCachedTasks.put(coord.getId(), coord);
 
-        for(DataNewItemAddedCallback callback: mDataChangedListeners) {
-            callback.onDataNewItemAdded(coord);
-        }
+        sendMessageNewDataItem(context, coord);
     }
 
-    public void addChangesCallback(@NonNull DataNewItemAddedCallback callback) {
-        mDataChangedListeners.add(callback);
-
+    private void sendMessageNewDataItem(Context context, Coord coord) {
+        Intent intent = new Intent(EVENT_NEW_DATA_ITEM_ADDED);
+        intent.putExtra("coord", coord);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
-
-    public void removeChangesCallback(@NonNull DataNewItemAddedCallback callback) {
-        mDataChangedListeners.remove(callback);
-    }
-
 
     @Override
     public void getCoord(@NonNull final String taskId, @NonNull final GetCoordCallback callback) {
@@ -132,6 +131,7 @@ public class CoordsProvider implements CoordsDataSource {
             }
         });
     }
+
 
     @Override
     public void deleteAllCoords() {

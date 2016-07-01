@@ -41,6 +41,8 @@ public interface CoordsContract {
 
     interface Presenter extends BasePresenter {
 
-        void removeCallback();
+        void onDataNewItemAdded(Coord coord);
+
+        void unregisterReceiver();
     }
 }

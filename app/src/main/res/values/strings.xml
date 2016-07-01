@@ -8,4 +8,5 @@
     <string name="longitude">Долгота:</string>
     <string name="latitude">Широта:</string>
     <string name="altitude">Высота:</string>
+    <string name="coordinates_list">Cписок координат</string>
 </resources>

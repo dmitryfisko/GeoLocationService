@@ -24,6 +24,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".ui.home.HomeActivity"
             android:label="@string/app_name"
@@ -37,7 +38,9 @@
 
         <activity
             android:name=".ui.coords.CoordsActivity"
-            android:parentActivityName=".ui.home.HomeActivity">
+            android:label="@string/coordinates_list"
+            android:parentActivityName=".ui.home.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.home.HomeActivity" />
@@ -46,6 +49,7 @@
         <service android:exported="false"
             android:label="@string/geo_service"
             android:name=".service.GeoService" />
+
     </application>
 
 </manifest>

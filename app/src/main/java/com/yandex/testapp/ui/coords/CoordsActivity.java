@@ -27,7 +27,6 @@ public class CoordsActivity extends AppCompatActivity {
                     getSupportFragmentManager(), tasksFragment, R.id.content_frame);
         }
         new CoordsPresenter(this, tasksFragment);
-
     }
 
 }
