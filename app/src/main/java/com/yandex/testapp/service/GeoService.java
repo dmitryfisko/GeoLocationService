@@ -8,8 +8,8 @@ import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.data.source.CoordsDataSource;
 import com.yandex.testapp.data.source.CoordsProvider;
 import com.yandex.testapp.data.source.local.CoordsLocalDataSource;
-import com.yandex.testapp.util.location.LocationTracker;
-import com.yandex.testapp.util.location.LocationsListener;
+import com.yandex.testapp.location.LocationTracker;
+import com.yandex.testapp.location.LocationsListener;
 
 public class GeoService extends Service implements LocationsListener {
 

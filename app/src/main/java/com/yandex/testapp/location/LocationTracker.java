@@ -1,4 +1,4 @@
-package com.yandex.testapp.util.location;
+package com.yandex.testapp.location;
 
 import android.Manifest;
 import android.content.Context;
@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
 import com.yandex.testapp.data.Coord;
-import com.yandex.testapp.util.location.network.NetworkLocationInfo;
-import com.yandex.testapp.util.location.network.NetworkLocationListener;
-import com.yandex.testapp.util.location.network.WifiAndCellCollector;
+import com.yandex.testapp.location.network.NetworkLocationInfo;
+import com.yandex.testapp.location.network.NetworkLocationListener;
+import com.yandex.testapp.location.network.WifiAndCellCollector;
 
 import java.util.concurrent.TimeUnit;
 
@@ -127,8 +127,7 @@ public class LocationTracker implements NetworkLocationListener {
             }
 
             if (coord != null) {
-                return new Coord(coord.getLongitude(), coord.getLatitude(),
-                        coord.getAltitude(), coord.getTimestamp());
+                return coord.changeTimestamp(System.currentTimeMillis());
             } else {
                 return null;
             }

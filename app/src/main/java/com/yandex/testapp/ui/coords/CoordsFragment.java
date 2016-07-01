@@ -61,7 +61,9 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
 
     @Override
     public void showLoadingFooter() {
-        mListFooterContainer.addView(mListFooterView);
+        if (mListFooterContainer.getChildCount() == 0) {
+            mListFooterContainer.addView(mListFooterView);
+        }
     }
 
     @Override

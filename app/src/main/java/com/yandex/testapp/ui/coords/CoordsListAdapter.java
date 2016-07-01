@@ -11,6 +11,7 @@ import com.yandex.testapp.R;
 import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.util.ActivityUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,13 +83,16 @@ public class CoordsListAdapter extends BaseAdapter {
     }
 
     private void fillHolder(ViewHolder holder, Coord coord) {
+        DecimalFormat formatter = new DecimalFormat("#.#######");
+
+
         double latitude = coord.getLatitude();
         double longitude = coord.getLongitude();
         double altitude = coord.getAltitude();
         long timestamp = coord.getTimestamp();
-        holder.longitudeText.setText(String.valueOf(latitude));
-        holder.latitudeText.setText(String.valueOf(longitude));
-        holder.altitudeText.setText(String.valueOf(altitude));
+        holder.longitudeText.setText(formatter.format(latitude));
+        holder.latitudeText.setText(formatter.format(longitude));
+        holder.altitudeText.setText(formatter.format(altitude));
         holder.timestampText.setText(ActivityUtils.getReadableDate(timestamp));
     }
 

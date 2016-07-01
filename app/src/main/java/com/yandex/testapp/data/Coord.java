@@ -37,6 +37,11 @@ public final class Coord implements Parcelable {
         mTimestamp = parcel.readLong();
     }
 
+    public Coord changeTimestamp(long timestamp) {
+        return new Coord(mId, mLongitude, mLatitude,
+                mAltitude, timestamp);
+    }
+
     public long getId() {
         return mId;
     }

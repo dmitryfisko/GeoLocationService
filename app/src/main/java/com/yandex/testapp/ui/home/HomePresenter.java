@@ -15,6 +15,7 @@ public class HomePresenter implements HomeContract.Presenter {
     };
 
     static final int GEO_SERVICE_PERMISSIONS_REQUEST = 100;
+    static final long MAX_INTERVAL_SIZE_SECONDS = 100000;
 
     private HomeContract.View mHomeView;
     private Context mContext;
@@ -62,6 +63,9 @@ public class HomePresenter implements HomeContract.Presenter {
         try {
             timeInterval = Double.parseDouble(textTimeInterval);
         } catch (NumberFormatException e) {
+            timeInterval = 0;
+        }
+        if (timeInterval > MAX_INTERVAL_SIZE_SECONDS) {
             timeInterval = 0;
         }
 

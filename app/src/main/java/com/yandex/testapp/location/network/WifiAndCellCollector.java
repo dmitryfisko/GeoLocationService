@@ -1,4 +1,4 @@
-package com.yandex.testapp.util.location.network;
+package com.yandex.testapp.location.network;
 
 import android.Manifest;
 import android.content.Context;
