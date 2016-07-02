@@ -21,14 +21,6 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
 
     private boolean isDataWasNotAvaliable;
 
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Coord coord = intent.getParcelableExtra("coord");
-            onDataNewItemAdded(coord);
-        }
-    };
-
     public CoordsPresenter(Context context, CoordsContract.View coordsView) {
         mContext = context;
         mCoordsView = coordsView;
@@ -36,9 +28,6 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
 
         CoordsDataSource dataSource = CoordsLocalDataSource.getInstance(context);
         mCoordsProvider = CoordsProvider.getInstance(dataSource);
-
-        IntentFilter intentFilter = new IntentFilter(CoordsProvider.EVENT_NEW_DATA_ITEM_ADDED);
-        mContext.registerReceiver(mMessageReceiver, intentFilter);
 
         isDataWasNotAvaliable = false;
 
@@ -72,8 +61,4 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
         mCoordsView.showDataNotAvaliable();
     }
 
-    @Override
-    public void unregisterReceiver() {
-        mContext.unregisterReceiver(mMessageReceiver);
-    }
 }

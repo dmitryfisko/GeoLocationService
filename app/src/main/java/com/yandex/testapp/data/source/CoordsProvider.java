@@ -22,6 +22,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.yandex.testapp.data.Coord;
+import com.yandex.testapp.ui.coords.CoordsReceiver;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -33,13 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class CoordsProvider implements CoordsDataSource {
 
-    public static String EVENT_NEW_DATA_ITEM_ADDED = "com.yandex.testapp.EVENT_NEW_DATA_ITEM_ADDED";
     private static CoordsProvider INSTANCE = null;
-
     private final CoordsDataSource mCoordsLocalDataSource;
 
     Map<String, Coord> mCachedCoords;
-
     boolean mCacheIsDirty = false;
 
     private CoordsProvider(@NonNull CoordsDataSource coordsLocalDataSource) {
@@ -95,8 +93,7 @@ public class CoordsProvider implements CoordsDataSource {
     }
 
     private void sendMessageNewDataItem(Context context, Coord coord) {
-        Intent intent = new Intent(EVENT_NEW_DATA_ITEM_ADDED);
-//        intent.setClassName("com.yandex.testapp", "com.yandex.testapp.CoordsActivity");
+        Intent intent = new Intent(context, CoordsReceiver.class);
         intent.putExtra("coord", coord);
         context.sendBroadcast(intent);
     }

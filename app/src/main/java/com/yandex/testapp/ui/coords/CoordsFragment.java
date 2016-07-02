@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.yandex.testapp.R;
 import com.yandex.testapp.data.Coord;
+import com.yandex.testapp.data.source.CoordsProvider;
 
 import java.util.List;
 
@@ -24,6 +25,15 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
     private FrameLayout mListFooterContainer;
 
     private CoordsListAdapter mListAdapter;
+
+    public static CoordsFragment INSTANCE = null;
+
+    public static CoordsFragment getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new CoordsFragment();
+        }
+        return INSTANCE;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,13 +94,13 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
     }
 
     @Override
+    public void eventDataNewItemAdded(Coord coord) {
+        mPresenter.onDataNewItemAdded(coord);
+    }
+
+    @Override
     public void setPresenter(CoordsContract.Presenter presenter) {
         mPresenter = presenter;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mPresenter.unregisterReceiver();
-    }
 }

@@ -37,12 +37,12 @@ public interface CoordsContract {
         void showDataNotAvaliable();
 
         void hideDataNotAvaliable();
+
+        void eventDataNewItemAdded(Coord coord);
     }
 
     interface Presenter extends BasePresenter {
 
         void onDataNewItemAdded(Coord coord);
-
-        void unregisterReceiver();
     }
 }

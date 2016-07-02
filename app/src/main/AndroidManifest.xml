@@ -52,6 +52,9 @@
             android:process=":geo_service_process"
             android:name=".service.GeoService" />
 
+        <receiver android:name=".ui.coords.CoordsReceiver"
+            android:exported="false"/>
+
     </application>
 
 </manifest>

@@ -29,7 +29,7 @@ public class CoordsActivity extends AppCompatActivity {
         CoordsFragment tasksFragment =
                 (CoordsFragment) getSupportFragmentManager().findFragmentById(R.id.content_frame);
         if (tasksFragment == null) {
-            tasksFragment = new CoordsFragment();
+            tasksFragment = CoordsFragment.getInstance();
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), tasksFragment, R.id.content_frame);
         }
