@@ -73,7 +73,8 @@ public class HomePresenter implements HomeContract.Presenter {
         if (timeInterval > 0) {
             intent.putExtra("time_interval", (long)(timeInterval * 1000));
         }
-        mContext.startService(intent);
+        Context context = mContext.getApplicationContext();
+        context.startService(intent);
     }
 
     private void stopGeoService() {

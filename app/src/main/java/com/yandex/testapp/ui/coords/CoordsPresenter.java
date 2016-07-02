@@ -1,9 +1,6 @@
 package com.yandex.testapp.ui.coords;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 
 import com.yandex.testapp.data.Coord;
 import com.yandex.testapp.data.source.CoordsDataSource;
@@ -30,7 +27,6 @@ public class CoordsPresenter implements CoordsContract.Presenter, CoordsDataSour
         mCoordsProvider = CoordsProvider.getInstance(dataSource);
 
         isDataWasNotAvaliable = false;
-
     }
 
     @Override

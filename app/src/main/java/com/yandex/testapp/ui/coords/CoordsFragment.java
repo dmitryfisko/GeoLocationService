@@ -11,7 +11,6 @@ import android.widget.ListView;
 
 import com.yandex.testapp.R;
 import com.yandex.testapp.data.Coord;
-import com.yandex.testapp.data.source.CoordsProvider;
 
 import java.util.List;
 
@@ -26,13 +25,19 @@ public class CoordsFragment extends Fragment implements CoordsContract.View {
 
     private CoordsListAdapter mListAdapter;
 
-    public static CoordsFragment INSTANCE = null;
+    private static CoordsFragment INSTANCE = null;
+    private static boolean isInitialized = false;
 
     public static CoordsFragment getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new CoordsFragment();
         }
+        isInitialized = true;
         return INSTANCE;
+    }
+
+    public static boolean isInitialized() {
+        return isInitialized;
     }
 
     @Override
