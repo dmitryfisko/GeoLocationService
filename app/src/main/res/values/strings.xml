@@ -12,5 +12,5 @@
     <string name="coordinates_list">Coordinates list</string>
     <string name="time_interval">Requesting interval</string>
     <string name="seconds">seconds</string>
-    <string name="time_interval_start_value">21.0</string>
+    <string name="time_interval_start_value">5.0</string>
 </resources>
